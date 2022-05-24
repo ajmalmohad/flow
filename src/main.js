@@ -1,5 +1,5 @@
-import './styles/main.scss';
 import './world/world';
+import './styles/style.css'
 import Music from './music/Music.mp3'
 
 let playing = false;

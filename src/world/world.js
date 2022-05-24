@@ -55,7 +55,8 @@ loader2.load(
 	},
 
 	function ( xhr ) {
-		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+		document.getElementsByClassName("loader")[0].innerHTML = `<p>${Math.round(((xhr.loaded / xhr.total) * 100))}% Loaded</p>`
+		console.log( ( (xhr.loaded / xhr.total) * 100 ) + '% loaded' );
 	},
 
 	function ( error ) {

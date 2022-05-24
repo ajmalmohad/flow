@@ -1,16 +1,13 @@
+@import url('http://fonts.cdnfonts.com/css/akira-expanded');
+
 *{
     margin:0;
     padding:0;
     box-sizing: border-box;
 }
 
-@font-face {
-    font-family: 'Akira';
-    src: url('./../fonts/Akira\ Expanded\ Demo.otf');
-}
-
 body{
-    font-family:'Akira', sans-serif;
+    font-family:'Akira Expanded', sans-serif;
 }
 
 canvas{
@@ -54,11 +51,10 @@ canvas{
     padding: 16px;
     background: black;
     color: white;
-    font-family: 'Akira', sans-serif;
+    font-family: 'Akira Expanded', sans-serif;
 }
 
 .section{
     height:100vh;
     width: 100%;
-    // scroll-snap-align: center;
 }
