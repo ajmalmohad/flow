@@ -1,32 +1,56 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import Model from './../models/HCR_Race_Car.glb'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import Model2 from './models/Walking.fbx'
 import { Scene, PerspectiveCamera, WebGLRenderer, Color } from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass';
+import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass';
 
 let camera, scene, renderer;
-let mesh, animationScripts = [], scrollPercent = 0, loaded=false;
+let mesh, mixer, walk, scrollY=0;
 
 camera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.001, 1000);
 camera.position.set(0, 1, 2)
 scene = new Scene();
-scene.background = new Color('black')
+scene.background = new Color('#00ced1')
 renderer = new WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+const composer = new EffectComposer( renderer );
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls( camera, renderer.domElement );
 
+const renderPass = new RenderPass( scene, camera );
+composer.addPass( renderPass );
 
-const loader = new GLTFLoader();
+const glitchPass = new GlitchPass();
+composer.addPass( glitchPass );
 
-loader.load(
-	Model,
+const filmPass = new FilmPass(
+    0.35,
+    0.025,
+    5000, 
+    false,
+);
+filmPass.renderToScreen = true;
+composer.addPass(filmPass);
 
-	function ( gltf ) {
-		scene.add( gltf.scene );
-		mesh = gltf.scene;
+const loader2 = new FBXLoader();
+
+loader2.load(
+	Model2,
+
+	function ( model ) {
+		mesh = model;
+		mixer = new THREE.AnimationMixer(mesh);
+		walk = mixer.clipAction(mesh.animations[0]);
+		walk.play()
+		mesh.scale.set(0.01,0.01,0.01)
+		mesh.position.set(0,-1,0)
+		scene.add( mesh );
 		console.log(mesh);
-		loaded = true
+		controls.update();
 	},
 
 	function ( xhr ) {
@@ -34,35 +58,21 @@ loader.load(
 	},
 
 	function ( error ) {
-		console.log( 'An error happened' );
+		console.log( error);
 	}
 );
 
-
-window.scrollTo({ top: 0, behavior: 'smooth' })
-
-animationScripts.push({
-	start: 0,
-	end: 40,
-	func: () => {
-		camera.lookAt(mesh.position)
-		mesh.position.z = lerp(-10, -5, scalePercent(0, 40))
-	},
-})
-
-animationScripts.push({
-	start: 40,
-	end: 101,
-	func: () => {
-		camera.lookAt(mesh.position)
-		mesh.rotation.y = lerp(0, Math.PI, scalePercent(40, 60))
-	},
-})
-
+const clock = new THREE.Clock()
 function animate() {
 	requestAnimationFrame(animate);
-	if(loaded) playScrollAnimations()
+	if(mixer) mixer.update(clock.getDelta());
+	if(mesh){
+		mesh.rotation.y = (scrollY/50)*Math.PI;
+		mesh.position.z = (100 - scrollY*1.5)/80;
+		// camera.lookAt(mesh.position);
+	}
 	renderer.render(scene, camera);
+	composer.render()
 }
 
 animate();
@@ -70,37 +80,21 @@ animate();
 //Event Listeners
 window.addEventListener('resize', resize);
 
-document.addEventListener('scroll',()=>{
-	scrollPercent =
-		((document.documentElement.scrollTop || document.body.scrollTop) /
-			((document.documentElement.scrollHeight ||
-				document.body.scrollHeight) -
-				document.documentElement.clientHeight)) *
-		100;
-})
-
 function resize(){
 	camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-//Utility Functions
-function lerp(x, y, a) {
-	return (1 - a) * x + a * y
-}
-
-function scalePercent(start, end) {
-	return (scrollPercent - start) / (end - start)
-}
-
-function playScrollAnimations() {
-	animationScripts.forEach((a) => {
-		if (scrollPercent >= a.start && scrollPercent < a.end) {
-			a.func()
-		}
-	})
-}
-
 const light = new THREE.AmbientLight( 0xFFFFFF ); // soft white light
 scene.add( light );
+
+window.addEventListener('scroll',()=>{
+	scrollY = currentScrollPercentage();
+	console.log(scrollY);
+})
+
+function currentScrollPercentage()
+{
+    return ((document.documentElement.scrollTop + document.body.scrollTop) / (document.documentElement.scrollHeight - document.documentElement.clientHeight) * 100);
+}

@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "gsap": "^3.6.1",
+    "resources": "^0.4.3",
     "three": "^0.129.0"
   }
 }
