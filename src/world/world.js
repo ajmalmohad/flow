@@ -50,6 +50,7 @@ loader2.load(
 		mesh.position.set(0,-1,0)
 		scene.add( mesh );
 		console.log(mesh);
+		document.getElementsByClassName("loader")[0].style.display = "none";
 		controls.update();
 	},
 
