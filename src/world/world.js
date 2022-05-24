@@ -36,23 +36,7 @@ const filmPass = new FilmPass(
 filmPass.renderToScreen = true;
 composer.addPass(filmPass);
 
-
-const manager = new THREE.LoadingManager();
-manager.onLoad = function ( ) {
-	console.log( 'Loading complete!');
-	document.getElementsByClassName("loader")[0].style.display = "none";
-	controls.update();
-};
-
-manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
-	document.getElementsByClassName('loader')[0].innerHTML = `<p>${((itemsLoaded/itemsTotal) *100).toFixed(0)}% Loaded</p>`
-};
-
-manager.onError = function ( url ) {
-	console.log( 'There was an error loading ' + url );
-};
-
-const loader = new FBXLoader(manager);
+const loader = new FBXLoader();
 
 loader.load(
 	Model,
@@ -64,6 +48,17 @@ loader.load(
 		mesh.scale.set(0.01,0.01,0.01)
 		mesh.position.set(0,-1,0)
 		scene.add( mesh );
+		document.getElementsByClassName("loader")[0].style.display = "none";
+		controls.update();
+	},
+	function (xhr) {
+		let percent = (xhr.loaded/xhr.total) *100;
+		if(percent === Infinity){
+			document.getElementsByClassName('loader')[0].innerHTML = `<p>Loading</p>`
+		}else{
+			document.getElementsByClassName('loader')[0].innerHTML = `<p>${Math.round(percent)}% Loaded</p>`
+		}
+		
 	}
 );
 
