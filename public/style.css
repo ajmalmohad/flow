@@ -58,6 +58,7 @@ canvas{
     background: black;
     color: white;
     font-family: 'Akira Expanded', sans-serif;
+    border:none;
 }
 
 .section{
