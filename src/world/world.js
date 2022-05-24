@@ -5,7 +5,7 @@ import { Scene, PerspectiveCamera, WebGLRenderer, Color } from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass';
+// import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass';
 import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass';
 
 let camera, scene, renderer;
@@ -24,8 +24,8 @@ const controls = new OrbitControls( camera, renderer.domElement );
 const renderPass = new RenderPass( scene, camera );
 composer.addPass( renderPass );
 
-const glitchPass = new GlitchPass();
-composer.addPass( glitchPass );
+// const glitchPass = new GlitchPass();
+// composer.addPass( glitchPass );
 
 const filmPass = new FilmPass(
     0.35,
@@ -58,7 +58,6 @@ loader.load(
 		}else{
 			document.getElementsByClassName('loader')[0].innerHTML = `<p>${Math.round(percent)}% Loaded</p>`
 		}
-		
 	}
 );
 
