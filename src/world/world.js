@@ -55,8 +55,13 @@ loader2.load(
 	},
 
 	function ( xhr ) {
-		document.getElementsByClassName("loader")[0].innerHTML = `<p>${Math.round(((xhr.loaded / xhr.total) * 100))}% Loaded</p>`
-		console.log( ( (xhr.loaded / xhr.total) * 100 ) + '% loaded' );
+		let percent = ((xhr.loaded / xhr.total) * 100)
+		if(percent === Infinity){
+			document.getElementsByClassName("loader")[0].innerHTML = `<p>0% Loaded</p>`
+		}else{
+			document.getElementsByClassName("loader")[0].innerHTML = `<p>${Math.round(percent)}% Loaded</p>`
+		}
+		console.log(percent + '% loaded')
 	},
 
 	function ( error ) {

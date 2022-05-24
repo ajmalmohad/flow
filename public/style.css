@@ -1,4 +1,10 @@
-@import url('http://fonts.cdnfonts.com/css/akira-expanded');
+@font-face {
+    font-family: 'Akira Expanded';
+    font-style: normal;
+    font-weight: 800;
+    src: local('Akira Expanded'), url('https://fonts.cdnfonts.com/s/37506/Akira Expanded Demo.woff') format('woff');
+}
+
 
 *{
     margin:0;
