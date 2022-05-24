@@ -3,6 +3,7 @@ import Music from './music/Music.mp3'
 
 let playing = false;
 var audio = new Audio(Music);
+audio.loop = true;
 
 function play() {
     if (!playing) {
